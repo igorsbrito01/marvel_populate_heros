@@ -1,0 +1,83 @@
+import requests
+
+from utils import TS, PUBLIC_KEY, create_api_hash
+
+BASE_URL = "https://gateway.marvel.com"
+BASE_URL_CHARACTERS = "/v1/public/characters"
+BASE_URL_COMICS = "/v1/public/comics/"
+
+
+def get_credentials():
+    hash = create_api_hash()
+
+    return f"ts={TS}&apikey={PUBLIC_KEY}&hash={hash}"
+
+
+def build_response_default_single_value(status_code, content):
+    if status_code == 200:
+        return status_code, content["data"]["results"]
+
+    return status_code, None
+
+
+def build_response_default_multiple_values(status_code, content):
+    data = None
+    offset_next = None
+    if status_code == 200:
+        data = content["data"]["results"]
+        next = content["data"]["offset"] + content["data"]["limit"] + 1
+        if content["data"]["total"] > next:
+            offset_next = next
+
+    return status_code, data, offset_next
+
+
+def get_character_by_name(character_name):
+    credentials = get_credentials()
+    url = f"{BASE_URL}{BASE_URL_CHARACTERS}?{credentials}&name={character_name}"
+
+    response = requests.get(url)
+
+    return build_response_default_single_value(response.status_code, response.json())
+
+
+def get_character_by_id(character_id):
+    credentials = get_credentials()
+    url = f"{BASE_URL}{BASE_URL_CHARACTERS}/{character_id}?{credentials}"
+
+    response = requests.get(url)
+
+    return build_response_default_single_value(response.status_code, response.json())
+
+
+def get_comics_by_id(comics_id):
+    credentials = get_credentials()
+    url = f"{BASE_URL}{BASE_URL_COMICS}/{comics_id}?{credentials}"
+
+    response = requests.get(url)
+
+    return build_response_default_single_value(response.status_code, response.json())
+
+
+def get_characters_from_comics_id(comics_id, offset=0):
+    credentials = get_credentials()
+    url = (
+        f"{BASE_URL}{BASE_URL_COMICS}/{comics_id}/"
+        f"characters?{credentials}&orderBy=name&offset={offset}"
+    )
+
+    response = requests.get(url)
+
+    return build_response_default_multiple_values(response.status_code, response.json())
+
+
+def get_comics_from_character_id(character_id, offset=0):
+    credentials = get_credentials()
+    url = (
+        f"{BASE_URL}{BASE_URL_CHARACTERS}/{character_id}/"
+        f"comics?{credentials}&orderBy=title&offset={offset}"
+    )
+
+    response = requests.get(url)
+
+    return build_response_default_multiple_values(response.status_code, response.json())

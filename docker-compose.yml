@@ -1,0 +1,68 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'marvel_comics'
+      MYSQL_USER: 'marvel_user'
+      MYSQL_PASSWORD: '20101020'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+  task:
+    image: populate-marvels-heros-task:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      [
+        "python",
+        "run_task.py"
+      ]
+    volumes:
+      - type: bind
+        source: ./code/
+        target: /code/
+
+  task_custom:
+    image: populate-marvels-heros-task:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      [
+        "python",
+        "run_custom.py"
+      ]
+    volumes:
+      - type: bind
+        source: ./code/
+        target: /code/
+
+  init_database:
+    image: populate-marvels-heros-task:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      [
+        "python",
+        "init_database.py"
+      ]
+    volumes:
+      - type: bind
+        source: ./code/
+        target: /code/
+
+volumes:
+  my-db:
+
+networks:
+  default:
+    name: altlegal

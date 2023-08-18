@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, ForeignKey, String, Text
 from sqlalchemy.orm import mapped_column, relationship
 
-from settings_db import Base
+from utils_db import Base
 
 
 class Character(Base):

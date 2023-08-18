@@ -1,3 +1,3 @@
-from settings_db import create_all_tables
+from utils_db import create_all_tables
 
 create_all_tables()

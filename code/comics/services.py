@@ -1,7 +1,7 @@
 from sqlalchemy import func, select
 
 from comics.models import Character, Comics, CharacterComics
-from settings_db import get_db_session
+from utils_db import get_db_session
 
 
 def create_character(id, name, description, picture_url):

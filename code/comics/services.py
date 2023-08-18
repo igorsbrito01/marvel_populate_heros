@@ -4,9 +4,11 @@ from comics.models import Character, Comics, CharacterComics
 from settings_db import get_db_session
 
 
-def create_character(id, name, description):
+def create_character(id, name, description, picture_url):
     with get_db_session() as session:
-        characters = Character(name=name, description=description)
+        characters = Character(
+            id=id, name=name, description=description, picture_url=picture_url
+        )
         session.add(characters)
         session.commit()
 

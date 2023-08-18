@@ -43,6 +43,8 @@ def populate_character_and_assosiations(character_name):
 
     offset = 0
     while offset is not None:
+        # The comics endpoint return paginated data
+        # we uses this while to run over all pages of the endpoint
         status_code, data, offset = get_comics_from_character_id(main_id, offset)
 
         if not data:
@@ -71,6 +73,8 @@ def populate_character_and_assosiations(character_name):
 
             offset_characters = 0
             while offset_characters is not None:
+                # The character endpoint return paginated data
+                # we uses this while to run over all pages of the endpoint
                 (
                     status_code,
                     data_character,
@@ -115,5 +119,7 @@ def populate_character_and_assosiations(character_name):
     insert_in_bulk([item for item in comics_to_save.values()])
     insert_in_bulk([item for item in character_comics_to_save.values()])
 
-
-populate_character_and_assosiations("Spectrum")
+    print(" ")
+    print(f"New Characters added: {len(characters_to_save)}")
+    print(f"New Comics added: {len(comics_to_save)}")
+    print(" ")

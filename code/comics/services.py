@@ -17,6 +17,7 @@ def get_character_by_id(id):
         session.expunge_all()
         return character
 
+
 def get_character_by_name(name):
     with get_db_session() as session:
         character = session.query(Character).filter_by(name=name).first()
@@ -81,6 +82,7 @@ def insert_in_bulk(objects):
     with get_db_session() as session:
         session.bulk_save_objects(objects)
         session.commit()
+
 
 def count_rows(class_name):
     with get_db_session() as session:

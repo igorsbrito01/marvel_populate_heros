@@ -15,6 +15,12 @@ logging.basicConfig(
 
 
 def populate_character_and_assosiations(character_name):
+    """
+    Populate the database with a Marvel's character with
+    the same name as the parameters name. This one is going to be our main character.
+    Also, Populate the database with the other characters that worked with our main character.
+    We are defining worked with, as appears at the same comics.
+    """
     characters_to_save = {}
     comics_to_save = {}
     character_comics_to_save = {}

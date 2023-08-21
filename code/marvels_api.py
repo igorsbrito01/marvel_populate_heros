@@ -1,4 +1,5 @@
 import requests
+from typing import Tuple, Optional, Dict, Any, List
 
 from utils import TS, PUBLIC_KEY, create_api_hash
 
@@ -13,14 +14,18 @@ def get_credentials():
     return f"ts={TS}&apikey={PUBLIC_KEY}&hash={hash}"
 
 
-def build_response_default_single_value(status_code, content):
+def build_response_default_single_value(
+    status_code: int, content: Dict[str, Any]
+) -> Tuple[int, Optional[List[Dict[str, Any]]]]:
     if status_code == 200:
         return status_code, content["data"]["results"]
 
     return status_code, None
 
 
-def build_response_default_multiple_values(status_code, content):
+def build_response_default_multiple_values(
+    status_code: int, content: Dict[str, Any]
+) -> Tuple[int, Optional[List[Dict[str, Any]]], Optional[int]]:
     data = None
     offset_next = None
     if status_code == 200:
@@ -32,7 +37,9 @@ def build_response_default_multiple_values(status_code, content):
     return status_code, data, offset_next
 
 
-def get_character_by_name(character_name):
+def get_character_by_name(
+    character_name: str,
+) -> Tuple[int, Optional[List[Dict[str, Any]]]]:
     credentials = get_credentials()
     url = f"{BASE_URL}{BASE_URL_CHARACTERS}?{credentials}&name={character_name}"
 
@@ -41,7 +48,9 @@ def get_character_by_name(character_name):
     return build_response_default_single_value(response.status_code, response.json())
 
 
-def get_character_by_id(character_id):
+def get_character_by_id(
+    character_id: int,
+) -> Tuple[int, Optional[List[Dict[str, Any]]]]:
     credentials = get_credentials()
     url = f"{BASE_URL}{BASE_URL_CHARACTERS}/{character_id}?{credentials}"
 
@@ -50,7 +59,7 @@ def get_character_by_id(character_id):
     return build_response_default_single_value(response.status_code, response.json())
 
 
-def get_comics_by_id(comics_id):
+def get_comics_by_id(comics_id: int) -> Tuple[int, Optional[List[Dict[str, Any]]]]:
     credentials = get_credentials()
     url = f"{BASE_URL}{BASE_URL_COMICS}/{comics_id}?{credentials}"
 
@@ -59,7 +68,9 @@ def get_comics_by_id(comics_id):
     return build_response_default_single_value(response.status_code, response.json())
 
 
-def get_characters_from_comics_id(comics_id, offset=0):
+def get_characters_from_comics_id(
+    comics_id: int, offset: int = 0
+) -> Tuple[int, Optional[List[Dict[str, Any]]], Optional[int]]:
     credentials = get_credentials()
     url = (
         f"{BASE_URL}{BASE_URL_COMICS}/{comics_id}/"
@@ -71,7 +82,9 @@ def get_characters_from_comics_id(comics_id, offset=0):
     return build_response_default_multiple_values(response.status_code, response.json())
 
 
-def get_comics_from_character_id(character_id, offset=0):
+def get_comics_from_character_id(
+    character_id: int, offset: int = 0
+) -> Tuple[int, Optional[List[Dict[str, Any]]], Optional[int]]:
     credentials = get_credentials()
     url = (
         f"{BASE_URL}{BASE_URL_CHARACTERS}/{character_id}/"

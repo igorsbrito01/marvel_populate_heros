@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 
 from settings import DB_CONN_STR
@@ -11,18 +11,18 @@ engine = create_engine(DB_CONN_STR, echo=True)
 Base = declarative_base()
 
 
-def get_db_session():
+def get_db_session() -> Session:
     Session = sessionmaker(bind=engine)
     return Session()
 
 
-def create_all_tables():
+def create_all_tables() -> None:
     from comics.models import CharacterComics, Character, Comics
 
     Base.metadata.create_all(engine)
 
 
-def drop_tables():
+def drop_tables() -> None:
     from comics.models import CharacterComics, Character, Comics
 
     CharacterComics.__table__.drop(engine)
